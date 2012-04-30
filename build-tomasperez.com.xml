@@ -1,0 +1,82 @@
+<project name="tomasperez.com" basedir=".">
+
+	<description>
+		A simple build file for tomasperez.com
+	</description>
+
+	<property name="yc" value="yuicompressor-2.4.7.jar" />
+
+	<!-- Macros -->
+	<macrodef name="yc-js-all">
+		<attribute name="dir" />
+		<sequential>
+			<apply executable="java" parallel="false" force="true">
+				<fileset dir="@{dir}" includes="*.js" />
+				<arg line="-jar" />
+				<arg path="${yc}" />
+				<srcfile />
+				<arg line="-o" />
+				<mapper type="glob" from="*.js" to="@{dir}/*.js" />
+				<targetfile />
+			</apply>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="yc-css-all">
+		<attribute name="dir" default="${build.css.dir}" />
+		<sequential>
+			<apply executable="java" parallel="false" force="true">
+				<fileset dir="@{dir}" includes="*.css" />
+				<arg line="-jar" />
+				<arg path="${yc}" />
+				<arg line="-v --line-break 0" />
+				<srcfile />
+				<arg line="-o" />
+				<mapper type="glob" from="*.css" to="@{dir}/*.css" />
+				<targetfile />
+			</apply>
+		</sequential>
+	</macrodef>
+
+	<!-- Remove current files -->
+	<delete dir="fw"/>
+	<delete dir="server"/>
+	<delete dir="www"/>
+
+	<!-- Copy source files -->
+	<copy todir="fw">
+		<fileset dir="../blackbriar/fw/">
+			<exclude name="**/.git/**" />
+			<exclude name="**/.gitignore" />
+		</fileset>
+	</copy>
+
+	<copy todir="server">
+		<fileset dir="../blackbriar/server/">
+			<exclude name="**/.git/**" />
+			<exclude name="**/.gitignore" />
+		</fileset>
+	</copy>
+
+	<copy todir="www">
+		<fileset dir="../0x101.com-www/">
+			<exclude name="**/.git/**" />
+			<exclude name="**/.gitignore" />
+		</fileset>
+	</copy>
+
+	<copy todir="www/blog/images/">
+		<fileset dir="../images/">
+			<exclude name="**/.git/**" />
+			<exclude name="**/.gitignore" />
+		</fileset>
+	</copy>
+
+	<copy file="../blackbriar/server.js" todir="." overwrite="true" />
+	<copy file="./config/setup.json" todir="./www/" overwrite="true" />
+
+	<!-- Minify static files -->
+	<yc-js-all dir="./www/blog/js/" />	
+	<yc-css-all dir="./www/blog/css/" />	
+
+</project>
