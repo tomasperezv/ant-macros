@@ -5,6 +5,7 @@
 	</description>
 
 	<property name="yc" value="yuicompressor-2.4.7.jar" />
+	<property name="htmlcompressor" value="htmlcompressor-1.5.3.jar" />
 
 	<!-- Macros -->
 	<macrodef name="yc-js-all">
@@ -33,6 +34,22 @@
 				<srcfile />
 				<arg line="-o" />
 				<mapper type="glob" from="*.css" to="@{dir}/*.css" />
+				<targetfile />
+			</apply>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="htmlcompressor-all">
+		<attribute name="dir" default="${build.css.dir}" />
+		<sequential>
+			<apply executable="java" parallel="false" force="true">
+				<fileset dir="@{dir}" includes="*.mustache" />
+				<arg line="-jar" />
+				<arg path="${htmlcompressor}" />
+				<arg line="--type html" />
+				<srcfile />
+				<arg line="-o" />
+				<mapper type="glob" from="*.mustache" to="@{dir}/*.mustache.minified" />
 				<targetfile />
 			</apply>
 		</sequential>
